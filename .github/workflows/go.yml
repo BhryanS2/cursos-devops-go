@@ -1,8 +1,14 @@
-on: push
-name: 🚀 Deploy website on push
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
 jobs:
 
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -11,15 +17,21 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: 1.18
-
-    - name: Build
-      run: go build -v main.go
       
-    - name: build-db
+    - name: Build-DB
       run: docker-compose build
       
     - name: Create-DB
       run: docker-compose up -d
-      
+
     - name: Test
       run: go test -v main_test.go
+      
+  
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: go build -v main.go
