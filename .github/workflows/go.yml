@@ -14,15 +14,12 @@ jobs:
 
     - name: Build
       run: go build -v main.go
-
+      
+    - name: build-db
+      run: docker-compose build
+      
+    - name: Create-DB
+      run: docker-compose up -d
+      
     - name: Test
       run: go test -v main_test.go
-
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@4.3.2
-      with:
-        server: ftpupload.net
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /htdocs
-        exclude: .gitignore
